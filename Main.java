@@ -2,8 +2,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
-public class Main {
+public class Main extends Thread {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         RestaurantManager manager = new RestaurantManager();
@@ -312,6 +318,38 @@ public class Main {
             }
 
         }
+
+        String RESTAURANT_OUTPUT_FILE = "restaurant.txt";
+        String MENU_OUTPUT_FILE = "menu.txt";
+        FileWriter fileWriter = new FileWriter(RESTAURANT_OUTPUT_FILE);
+        BufferedWriter RestaurantWriter = new BufferedWriter(fileWriter);
+        List<Restaurant> RestaurantList = manager.restaurants;
+        FileWriter MenuWriter = new FileWriter(MENU_OUTPUT_FILE);
+        BufferedWriter FoodWriter = new BufferedWriter(MenuWriter);
+        List<Food> MenuList = manager.menu;
+
+        while (RestaurantList.size() != 0) {
+            Restaurant temp = RestaurantList.remove(0);
+            if (temp.categories.size() == 3) {
+                RestaurantWriter.write(
+                        temp.Id + "," + temp.name + "," + temp.score + "," + temp.price + "," + temp.ZipCode + ","
+                                + temp.categories.get(0) + "," + temp.categories.get(1) + "," + temp.categories.get(2));
+            } else if (temp.categories.size() == 2) {
+                RestaurantWriter.write(temp.Id + "," + temp.name + "," + temp.score + "," + temp.price + ","
+                        + temp.ZipCode + "," + temp.categories.get(0) + "," + temp.categories.get(1));
+            } else if (temp.categories.size() == 1) {
+                RestaurantWriter.write(temp.Id + "," + temp.name + "," + temp.score + "," + temp.price + ","
+                        + temp.ZipCode + "," + temp.categories.get(0));
+            }
+            RestaurantWriter.write(System.lineSeparator());
+        }
+        RestaurantWriter.close();
+        while (MenuList.size() != 0) {
+            Food temp = MenuList.remove(0);
+            FoodWriter.write(temp.RestaurantId + "," + temp.category + "," + temp.name + "," + temp.price);
+        }
+        FoodWriter.close();
+
         scanner.close();
     }
 
