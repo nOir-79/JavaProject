@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.io.Serializable;
 
@@ -9,6 +10,7 @@ class Restaurant implements Serializable {
     String price;
     int ZipCode;
     List<String> categories = new ArrayList<>();
+    HashMap<String, List<String>> requests;
 
     public Restaurant() {
 
