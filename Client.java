@@ -1,14 +1,20 @@
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.HashMap;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
-public class Main extends Thread {
-    public static void main(String[] args) throws Exception {
+public class Client {
+    public void Run(Socket socket) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        RestaurantManager manager = new RestaurantManager();
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        RestaurantManager manager;
+        manager = (RestaurantManager) ois.readObject();
+        // String s = (String)ois.readObject();
+
         while (true) {
             System.out.println("  Main Menu:");
             System.out.println("1) Search Restaurants:");
@@ -41,7 +47,7 @@ public class Main extends Thread {
                     } else {
                         System.out.println("Restaurant with this name:");
                         for (int i = 0; i < restaurant.size(); i++) {
-                            PrintRestaurant(restaurant.get(i));
+                            manager.PrintRestaurant(restaurant.get(i));
                         }
                     }
                 }
@@ -59,7 +65,7 @@ public class Main extends Thread {
                     } else {
                         System.out.println("Restaurant in this range:");
                         for (int i = 0; i < restaurant.size(); i++) {
-                            PrintRestaurant(restaurant.get(i));
+                            manager.PrintRestaurant(restaurant.get(i));
                         }
                     }
 
@@ -75,7 +81,7 @@ public class Main extends Thread {
                     } else {
                         System.out.println("Restaurants of this category:");
                         for (int i = 0; i < restaurant.size(); i++) {
-                            PrintRestaurant(restaurant.get(i));
+                            manager.PrintRestaurant(restaurant.get(i));
                         }
                     }
                 }
@@ -91,7 +97,7 @@ public class Main extends Thread {
                     } else {
                         System.out.println("Restaurants of this Price:");
                         for (int i = 0; i < restaurant.size(); i++) {
-                            PrintRestaurant(restaurant.get(i));
+                            manager.PrintRestaurant(restaurant.get(i));
                         }
                     }
                 } else if (option == 5) {
@@ -106,7 +112,7 @@ public class Main extends Thread {
                     } else {
                         System.out.println("Restaurants of this Price:");
                         for (int i = 0; i < restaurant.size(); i++) {
-                            PrintRestaurant(restaurant.get(i));
+                            manager.PrintRestaurant(restaurant.get(i));
                         }
                     }
                 } else if (option == 6) {
@@ -152,7 +158,7 @@ public class Main extends Thread {
                         System.out.println("No such food item with this name");
                     } else {
                         for (int i = 0; i < food.size(); i++) {
-                            PrintFood(food.get(i));
+                            manager.PrintFood(food.get(i));
                         }
                     }
                 } else if (option2 == 2) {
@@ -167,7 +173,7 @@ public class Main extends Thread {
                         System.out.println("No such food item with this name in this restaurant");
                     } else {
                         for (int i = 0; i < food.size(); i++) {
-                            PrintFood(food.get(i));
+                            manager.PrintFood(food.get(i));
                         }
                     }
                 } else if (option2 == 3) {
@@ -180,7 +186,7 @@ public class Main extends Thread {
                         System.out.println("No such food item with this category");
                     } else {
                         for (int i = 0; i < food.size(); i++) {
-                            PrintFood(food.get(i));
+                            manager.PrintFood(food.get(i));
                         }
                     }
                 }
@@ -197,7 +203,7 @@ public class Main extends Thread {
                         System.out.println("No such food item in this category in this restaurant");
                     } else {
                         for (int i = 0; i < food.size(); i++) {
-                            PrintFood(food.get(i));
+                            manager.PrintFood(food.get(i));
                         }
                     }
                 }
@@ -216,7 +222,7 @@ public class Main extends Thread {
                         System.out.println("No such food item in this price range");
                     } else {
                         for (int i = 0; i < food.size(); i++) {
-                            PrintFood(food.get(i));
+                            manager.PrintFood(food.get(i));
                         }
                     }
                 } else if (option2 == 6) {
@@ -236,7 +242,7 @@ public class Main extends Thread {
                         System.out.println("No such food item in this price range");
                     } else {
                         for (int i = 0; i < food.size(); i++) {
-                            PrintFood(food.get(i));
+                            manager.PrintFood(food.get(i));
                         }
                     }
                 } else if (option2 == 7) {
@@ -249,7 +255,7 @@ public class Main extends Thread {
                         System.out.println("No such food item with this name in this restaurant");
                     } else {
                         for (int i = 0; i < food.size(); i++) {
-                            PrintFood(food.get(i));
+                            manager.PrintFood(food.get(i));
                         }
                     }
                 } else if (option2 == 8) {
@@ -315,56 +321,5 @@ public class Main extends Thread {
 
         }
 
-        String RESTAURANT_OUTPUT_FILE = "restaurant.txt";
-        String MENU_OUTPUT_FILE = "menu.txt";
-        FileWriter fileWriter = new FileWriter(RESTAURANT_OUTPUT_FILE);
-        BufferedWriter RestaurantWriter = new BufferedWriter(fileWriter);
-        List<Restaurant> RestaurantList = manager.restaurants;
-        FileWriter MenuWriter = new FileWriter(MENU_OUTPUT_FILE);
-        BufferedWriter FoodWriter = new BufferedWriter(MenuWriter);
-        List<Food> MenuList = manager.menu;
-
-        while (RestaurantList.size() != 0) {
-            Restaurant temp = RestaurantList.remove(0);
-            if (temp.categories.size() == 3) {
-                RestaurantWriter.write(
-                        temp.Id + "," + temp.name + "," + temp.score + "," + temp.price + "," + temp.ZipCode + ","
-                                + temp.categories.get(0) + "," + temp.categories.get(1) + "," + temp.categories.get(2));
-            } else if (temp.categories.size() == 2) {
-                RestaurantWriter.write(temp.Id + "," + temp.name + "," + temp.score + "," + temp.price + ","
-                        + temp.ZipCode + "," + temp.categories.get(0) + "," + temp.categories.get(1));
-            } else if (temp.categories.size() == 1) {
-                RestaurantWriter.write(temp.Id + "," + temp.name + "," + temp.score + "," + temp.price + ","
-                        + temp.ZipCode + "," + temp.categories.get(0));
-            }
-            RestaurantWriter.write(System.lineSeparator());
-        }
-        RestaurantWriter.close();
-        while (MenuList.size() != 0) {
-            Food temp = MenuList.remove(0);
-            FoodWriter.write(temp.RestaurantId + "," + temp.category + "," + temp.name + "," + temp.price);
-        }
-        FoodWriter.close();
-
-        scanner.close();
-    }
-
-    public static void PrintRestaurant(Restaurant restaurant) {
-        System.out.println("Restaurant Name: " + restaurant.name);
-        System.out.println("Restaurant Id: " + restaurant.Id);
-        System.out.println("Restaurant Score: " + restaurant.score);
-        System.out.println("Restaurant Price: " + restaurant.price);
-        System.out.println("Restaurant Zip Code: " + restaurant.ZipCode);
-        System.out.println("Restaurant Categories: ");
-        for (int i = 0; i < restaurant.categories.size(); i++) {
-            System.out.println((i + 1) + ". " + restaurant.categories.get(i));
-        }
-    }
-
-    public static void PrintFood(Food food) {
-        System.out.println("Food Name: " + food.name);
-        System.out.println("Restaurant Id: " + food.RestaurantId);
-        System.out.println("Food Price: " + food.price);
-        System.out.println("Food Category: " + food.category);
     }
 }

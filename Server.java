@@ -1,26 +1,27 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
 
+    public static RestaurantManager restaurantManager;
+
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(12345, 0, null)) {
-
+        try (ServerSocket serverSocket = new ServerSocket(12345)) {
             while (true) {
+                restaurantManager = new RestaurantManager();
+                System.out.println("Before Client");
                 Socket clientSocket = serverSocket.accept();
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
-                while (true) {
-                    System.out.println(reader.readLine());
-                }
+                System.out.println("After Client");
+                ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+                oos.writeObject(restaurantManager);
             }
+
         } catch (Exception e) {
             // TODO: handle exception
         }
+
     }
 }

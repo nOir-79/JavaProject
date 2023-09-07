@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-class Restaurant {
+class Restaurant implements Serializable {
     int Id;
     String name;
     double score;

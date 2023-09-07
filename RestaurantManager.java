@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.io.Serializable;
 
-public class RestaurantManager {
+public class RestaurantManager implements Serializable {
     List<Restaurant> restaurants = new ArrayList<>();
     List<Food> menu = new ArrayList<>();
     List<String> restaurantCategory = new ArrayList<>();
@@ -280,6 +281,25 @@ public class RestaurantManager {
     void AddFood(int RestaurantId, String Category, String Name, double Price) {
         Food food = new Food(RestaurantId, Category, Name, Price);
         menu.add(food);
+    }
+
+    public void PrintRestaurant(Restaurant restaurant) {
+        System.out.println("Restaurant Name: " + restaurant.name);
+        System.out.println("Restaurant Id: " + restaurant.Id);
+        System.out.println("Restaurant Score: " + restaurant.score);
+        System.out.println("Restaurant Price: " + restaurant.price);
+        System.out.println("Restaurant Zip Code: " + restaurant.ZipCode);
+        System.out.println("Restaurant Categories: ");
+        for (int i = 0; i < restaurant.categories.size(); i++) {
+            System.out.println((i + 1) + ". " + restaurant.categories.get(i));
+        }
+    }
+
+    public void PrintFood(Food food) {
+        System.out.println("Food Name: " + food.name);
+        System.out.println("Restaurant Id: " + food.RestaurantId);
+        System.out.println("Food Price: " + food.price);
+        System.out.println("Food Category: " + food.category);
     }
 
 }

@@ -1,4 +1,6 @@
-class Food {
+import java.io.Serializable;
+
+class Food implements Serializable {
     int RestaurantId;
     String category;
     String name;
